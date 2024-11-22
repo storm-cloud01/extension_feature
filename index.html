@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inhale Exhale</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container"> 
+    <div class="slideshow-container"></div>
+    <div class="breathing-circle"></div>
+    <div class="breathing-text" id="breathingText">Breathe In</div>
+    
+    <!-- Icons for Sound and Image Toggle -->
+    <div class="icon-container">
+        <img id="sound-icon" src="audio_icon.png" alt="Sound Icon" class="icon">
+        <img id="picture-icon" src="image_icon.png" alt="Picture Icon" class="icon">
+    </div>
+    
+    <!-- Audio files -->
+    <audio id="breathInAudio" loop>
+        <source src="1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="breathOutAudio" loop>
+        <source src="2.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<script>
+// Image Slideshow Script
+const slideshowContainer = document.querySelector('.slideshow-container');
+const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
+let currentIndex = 0;
+let slideshowActive = true;
+
+// Set initial background to the first image
+slideshowContainer.style.backgroundImage = `url(${images[currentIndex]})`;
+
+function changeBackground() {
+    if (slideshowActive) {
+        currentIndex = (currentIndex + 1) % images.length;
+        slideshowContainer.style.backgroundImage = `url(${images[currentIndex]})`;
+    }
+}
+
+// Automatically start the slideshow with smooth transitions
+setInterval(changeBackground, 20000); // Change image every 20 seconds
+
+// Breathing Animation Text and Audio Control
+const breathingText = document.getElementById("breathingText");
+const breathInAudio = document.getElementById("breathInAudio");
+const breathOutAudio = document.getElementById("breathOutAudio");
+let isBreathingIn = true;
+
+function toggleBreathing() {
+    if (isBreathingIn) {
+        breathingText.innerText = "Breathe Out";
+        breathInAudio.pause();
+        breathOutAudio.play();
+    } else {
+        breathingText.innerText = "Breathe In";
+        breathOutAudio.pause();
+        breathInAudio.play();
+    }
+    isBreathingIn = !isBreathingIn;
+}
+
+setInterval(toggleBreathing, 5000); // Toggle every 5 seconds
+
+// Sound Control Script
+const soundIcon = document.getElementById('sound-icon');
+let isMuted = false;
+
+soundIcon.addEventListener('click', () => {
+    isMuted = !isMuted;
+    breathInAudio.muted = isMuted;
+    breathOutAudio.muted = isMuted;
+    soundIcon.src = isMuted ? "sound_slash.png" : "audio_icon.png"; // Update icon based on mute state
+});
+
+// Picture Control Script
+const pictureIcon = document.getElementById('picture-icon');
+
+pictureIcon.addEventListener('click', () => {
+    slideshowActive = !slideshowActive;
+    pictureIcon.src = slideshowActive ? "image_icon.png" : "image_slash.png"; // Update icon based on slideshow state
+    if (!slideshowActive) {
+        slideshowContainer.style.backgroundImage = "url('black_background.jpg')"; // Set black background
+    } else {
+        currentIndex = 0; // Reset index to start slideshow from the beginning
+        changeBackground();
+    }
+});
+</script>
+
+</body>
+</html>
